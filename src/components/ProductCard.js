@@ -15,7 +15,7 @@ function ProductCard({id, src, name, price}) {
 				/>
 				<p className="m-0 text-center font-poppins font-black text-[1.375rem]">{name}</p>
 				<p className="m-0 text-center font-poppins font-bold text-[1.063rem] text-first-brown">
-					IDR {price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+					IDR {price.toLocaleString("id-ID")}
 				</p>
 			</Link>
 		</div>

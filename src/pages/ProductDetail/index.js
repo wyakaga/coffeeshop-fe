@@ -52,7 +52,7 @@ function ProductDetail() {
 								<p className="font-poppins font-medium text-4xl">
 									IDR{" "}
 									{dataProduct[0] &&
-										dataProduct[0]["price"].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+										dataProduct[0]["price"].toLocaleString("id-ID")}
 								</p>
 							</div>
 						</div>
