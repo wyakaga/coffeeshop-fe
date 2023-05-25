@@ -5,8 +5,10 @@ import { getOtp, forgot } from "../../utils/https/auth";
 import FooterAuth from "../../components/FooterAuth";
 
 import coffeeLogo from "../../assets/icon/coffee-shop-logo.webp";
+import { useNavigate } from "react-router-dom";
 
 function Forgot() {
+	const navigate = useNavigate();
 
 	const [email, setEmail] = React.useState("");
 	const [timeLeft, setTimeLeft] = React.useState({ minutes: 0, seconds: 0 });
@@ -85,6 +87,7 @@ function Forgot() {
 			.then((res) => {
 				console.log(res.data);
 				setTimeLeft({ minutes: 0, seconds: 0 });
+				navigate("/login");
 			})
 			.catch((err) => {
 				console.log(err);
