@@ -22,7 +22,7 @@ export const getProduct = (category, order, search, limit, page, controller) => 
 		url += `${category || order || search || limit ? "&" : "?"}page=${page}`;
 	}
 
-	const config = { signal: controller.signal };
+	const config = { signal: controller.signal, withCredentials: true };
 
 	return axios.get(url, config);
 };
