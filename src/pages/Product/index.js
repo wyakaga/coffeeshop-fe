@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import axios from "axios";
 import debounce from "lodash.debounce";
+
+import { getProduct } from "../../utils/https/product";
 
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
@@ -11,6 +12,8 @@ import promoMother from "../../assets/img/mothers-day.webp";
 import promoFreeCoffee from "../../assets/img/free-coffee.webp";
 import promoHalloween from "../../assets/img/halloween-day.webp";
 import searchIcon from "../../assets/icon/search.svg";
+import notFoundIllustration from "../../assets/img/data-not-found.gif";
+import loader from "../../assets/img/loader.gif";
 
 function Product() {
 	const tabsData = [
@@ -22,6 +25,7 @@ function Product() {
 	];
 
 	const [dataProduct, setDataProduct] = useState([]);
+	const [metaProduct, setMetaProduct] = useState([]);
 
 	const [category, setCategory] = useState("");
 	const [activeTabIndex, setActiveTabIndex] = useState(0);
@@ -29,26 +33,37 @@ function Product() {
 	const [keyword, setKeyword] = useState("");
 	const [pageLimit, setPageLimit] = useState(12);
 	const [currentPage, setCurrentPage] = useState(1);
+	const [isNotFound, setIsNotFound] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const [searchParams, setSearchParams] = useSearchParams();
 
-	// eslint-disable-next-line no-undef
-	const url = process.env.REACT_APP_SERVER_HOST;
+	const controller = useMemo(() => new AbortController(), []);
 
 	useEffect(() => {
-		axios
-			.get(
-				`${url}/products${`?${
-					`category=${category || searchParams.get("category") || ""}` || ""
-				}${`&order=${sort || searchParams.get("order") || ""}`}${`&search=${
-					keyword || searchParams.get("search") || ""
-				}`}${`&limit=${pageLimit}`}${`&page=${
-					currentPage || parseInt(searchParams.get("page")) || 1
-				}`}`}`
-			)
-			.then((res) => setDataProduct(res["data"]["data"]))
-			.catch((err) => console.log(err));
-	}, [category, sort, keyword, pageLimit, currentPage, searchParams]);
+		setIsLoading(true);
+		getProduct(
+			category || searchParams.get("category"),
+			sort || searchParams.get("order"),
+			keyword || searchParams.get("search"),
+			pageLimit,
+			currentPage || parseInt(searchParams.get("page")),
+			controller
+		)
+			.then((res) => {
+				setDataProduct(res["data"]["data"]);
+				setMetaProduct(res["data"]["meta"]);
+				setIsNotFound(false);
+				setIsLoading(false);
+			})
+			.catch((err) => {
+				console.log(err);
+				if (err.response.status === 404) {
+					setIsNotFound(true);
+					setIsLoading(false);
+				}
+			});
+	}, [category, sort, keyword, pageLimit, currentPage]);
 
 	const handleClickCategory = (category, idx) => {
 		setCategory(category);
@@ -79,10 +94,23 @@ function Product() {
 		setSearchParams(searchParams);
 	};
 
-	const firstRule = currentPage > pageLimit - 1 && dataProduct.length === pageLimit;
-	const secondRule = currentPage < pageLimit - 1 && dataProduct.length === pageLimit;
-
 	document.title = "Product";
+
+	function NotFound() {
+		return (
+			<div className="w-full h-full flex justify-center items-center">
+				<img src={notFoundIllustration} alt="not found gif" />
+			</div>
+		);
+	}
+
+	function Loader() {
+		return (
+			<div className="w-full h-full flex justify-center items-center">
+				<img src={loader} alt="loader gif" />
+			</div>
+		);
+	}
 
 	return (
 		<div className="body-wrapper grid grid-cols-1 grid-rows-1">
@@ -235,73 +263,52 @@ function Product() {
 								);
 							})}
 						</div>
-						<div className="products-content grid grid-cols-4 grid-rows-3 gap-y-20 gap-x-8">
-							{dataProduct.map((item) => {
-								return (
-									<ProductCard
-										key={item.id}
-										id={item.id}
-										src={item["img"]}
-										name={item["name"]}
-										price={item["price"]}
-									/>
-								);
-							})}
+						<div
+							className={`products-content min-h-[852.8px] w-full ${
+								isNotFound === false && "grid grid-cols-4 grid-rows-3 gap-y-20 gap-x-8"
+							}`}
+						>
+							{isLoading === true ? (
+								<Loader />
+							) : isNotFound === true ? (
+								<NotFound />
+							) : (
+								dataProduct.map((item) => {
+									return (
+										<ProductCard
+											key={item.id}
+											id={item.id}
+											src={item["img"]}
+											name={item["name"]}
+											price={item["price"]}
+										/>
+									);
+								})
+							)}
 						</div>
-						{(function () {
-							if (currentPage === 1 && dataProduct.length === pageLimit) {
-								return (
-									<div className="pagination flex justify-center">
-										<ul className="flex bg-white text-lg font-poppins border border-solid rounded-md cursor-pointer">
-											<li className="border-r-[0.5px] border-solid py-1 px-3">{currentPage}</li>
-											<li
-												className="py-1 px-3"
-												onClick={() => handlePaginate(pageLimit, currentPage, 1)}
-											>
-												Next
-											</li>
-										</ul>
-									</div>
-								);
-							} else if (
-								(firstRule && dataProduct.length === pageLimit) ||
-								(secondRule && dataProduct.length === pageLimit)
-							) {
-								return (
-									<div className="pagination flex justify-center">
-										<ul className="flex bg-white text-lg font-poppins border border-solid rounded-md cursor-pointer">
-											<li
-												className="py-1 px-3"
-												onClick={() => handlePaginate(pageLimit, currentPage - 1, 0)}
-											>
-												Previous
-											</li>
-											<li className="border-x-[0.5px] border-solid py-1 px-3">{currentPage}</li>
-											<li
-												className="py-1 px-3"
-												onClick={() => handlePaginate(pageLimit, currentPage + 1, 1)}
-											>
-												Next
-											</li>
-										</ul>
-									</div>
-								);
-							} else if (currentPage !== 1 && !firstRule && !secondRule) {
-								return (
-									<div className="pagination flex justify-center">
-										<ul className="flex bg-white text-lg font-poppins border border-solid rounded-md cursor-pointer">
-											<li
-												className="py-1 px-3"
-												onClick={() => handlePaginate(pageLimit, currentPage - 1, 0)}
-											>
-												Previous
-											</li>
-											<li className="border-r-[0.5px] border-solid py-1 px-3">{currentPage}</li>
-										</ul>
-									</div>
-								);
-							}
-						})()}
+						<div className="pagination flex justify-center">
+							{isNotFound === false && (
+								<ul className="flex bg-white text-lg font-poppins border border-solid rounded-md cursor-pointer">
+									{metaProduct["prev"] !== null && (
+										<li
+											className="py-1 px-3"
+											onClick={() => handlePaginate(pageLimit, currentPage - 1, 0)}
+										>
+											Previous
+										</li>
+									)}
+									<li className="border-x-[0.5px] border-solid py-1 px-3">{currentPage}</li>
+									{metaProduct["next"] !== null && (
+										<li
+											className="py-1 px-3"
+											onClick={() => handlePaginate(pageLimit, currentPage, 1)}
+										>
+											Next
+										</li>
+									)}
+								</ul>
+							)}
+						</div>
 						<div className="products-footer">
 							<p className="font-poppins font-normal text-[1.063rem] text-first-brown">
 								*the price has been cutted by discount appears
