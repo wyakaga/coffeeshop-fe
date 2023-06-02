@@ -21,7 +21,7 @@ export const Notification = () => {
 						<>
 							{icon}
 							{message}
-							{t.type !== "loading" && <button onClick={() => toast.dismiss(t.id)}>X</button>}
+							{t.type !== "loading" && <button onClick={() => toast.dismiss(t.id)}><i className="material-icons">close</i></button>}
 						</>
 					)}
 				</ToastBar>

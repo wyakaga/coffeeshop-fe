@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import debounce from "lodash.debounce";
+import { useLottie } from "lottie-react";
 
 import { getProduct } from "../../utils/https/product";
 
@@ -12,8 +13,8 @@ import promoMother from "../../assets/img/mothers-day.webp";
 import promoFreeCoffee from "../../assets/img/free-coffee.webp";
 import promoHalloween from "../../assets/img/halloween-day.webp";
 import searchIcon from "../../assets/icon/search.svg";
-import notFoundIllustration from "../../assets/img/data-not-found.gif";
-import loader from "../../assets/img/loader.gif";
+import notFoundIllustration from "../../assets/lottie/data-not-found.json";
+import loader from "../../assets/lottie/loader.json";
 
 function Product() {
 	const tabsData = [
@@ -97,19 +98,37 @@ function Product() {
 	document.title = "Product";
 
 	function NotFound() {
-		return (
-			<div className="w-full h-full flex justify-center items-center">
-				<img src={notFoundIllustration} alt="not found gif" />
-			</div>
-		);
+		const options = {
+			animationData: notFoundIllustration,
+			loop: true,
+			autoplay: true,
+		};
+
+		const style = {
+			width: 640,
+			height: 640,
+		};
+
+		const { View } = useLottie(options, style);
+
+		return <div className="w-full h-full flex justify-center items-start">{View}</div>;
 	}
 
 	function Loader() {
-		return (
-			<div className="w-full h-full flex justify-center items-center">
-				<img src={loader} alt="loader gif" />
-			</div>
-		);
+		const options = {
+			animationData: loader,
+			loop: true,
+			autoplay: true,
+		};
+
+		const style = {
+			width: 640,
+			height: 640,
+		};
+
+		const { View } = useLottie(options, style);
+
+		return <div className="w-full h-full flex justify-center items-start">{View}</div>;
 	}
 
 	return (
@@ -265,7 +284,9 @@ function Product() {
 						</div>
 						<div
 							className={`products-content min-h-[852.8px] w-full ${
-								isNotFound === false && "grid grid-cols-4 grid-rows-3 gap-y-20 gap-x-8"
+								isNotFound === false &&
+								isLoading === false &&
+								"grid grid-cols-4 grid-rows-3 gap-y-20 gap-x-8"
 							}`}
 						>
 							{isLoading === true ? (
@@ -288,19 +309,19 @@ function Product() {
 						</div>
 						<div className="pagination flex justify-center">
 							{isNotFound === false && (
-								<ul className="flex bg-white text-lg font-poppins border border-solid rounded-md cursor-pointer">
-									{metaProduct["prev"] !== null && (
+								<ul className="flex bg-white text-black text-lg font-poppins border border-solid rounded-md cursor-pointer">
+									{metaProduct["prev"] !== null && isLoading === false && (
 										<li
-											className="py-1 px-3"
+											className="py-1 px-3 rounded-l-md hover:bg-first-brown hover:text-white transition-all duration-300"
 											onClick={() => handlePaginate(pageLimit, currentPage - 1, 0)}
 										>
 											Previous
 										</li>
 									)}
 									<li className="border-x-[0.5px] border-solid py-1 px-3">{currentPage}</li>
-									{metaProduct["next"] !== null && (
+									{metaProduct["next"] !== null && isLoading === false && (
 										<li
-											className="py-1 px-3"
+											className="py-1 px-3 rounded-r-md hover:bg-first-brown hover:text-white transition-all duration-300"
 											onClick={() => handlePaginate(pageLimit, currentPage, 1)}
 										>
 											Next

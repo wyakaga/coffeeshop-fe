@@ -26,3 +26,8 @@ export const getProduct = (category, order, search, limit, page, controller) => 
 
 	return axios.get(url, config);
 };
+
+export const getProductDetails = id => {
+	const url = `${baseUrl}/products/${id}`;
+	return axios.get(url);
+};
