@@ -10,13 +10,12 @@ You can click the demo site [here!](https://coffeeshop-fe.vercel.app/)
 
 <h2>Project Screenshots:</h2>
 
-<img src="https://i.imgur.com/v6xnjeJ.png" alt="project-screenshot">
-
-<img src="https://i.imgur.com/Ro4ch9s.png" alt="project-screenshot">
-
-<img src="https://i.imgur.com/uuIeyET.png" alt="project-screenshot">
-
-<img src="https://i.imgur.com/gC5hFIY.png" alt="project-screenshot">
+<div style="display: flex; flex-wrap: wrap; gap: 0.25%;">
+  <img src="https://i.imgur.com/v6xnjeJ.png" alt="project-screenshot" width="24%">
+  <img src="https://i.imgur.com/Ro4ch9s.png" alt="project-screenshot" width="24%">
+  <img src="https://i.imgur.com/uuIeyET.png" alt="project-screenshot" width="24%">
+  <img src="https://i.imgur.com/gC5hFIY.png" alt="project-screenshot" width="24%">
+</div>
 
 <h2>🛠️ Installation Steps:</h2>
 

@@ -13,8 +13,8 @@ function SignUp() {
 	const navigate = useNavigate();
 
 	const [form, setForm] = React.useState({ email: "", password: "", phoneNumber: "" });
-
 	const [error, setError] = React.useState({ email: "", password: "", phoneNumber: "" });
+	const [visible, setVisible] = React.useState(false);
 
 	const handleRedirect = () => { navigate("/login") }
 
@@ -45,6 +45,8 @@ function SignUp() {
 		setError({ email: invalid.email, password: invalid.password, phoneNumber: invalid.phoneNumber });
 
 		if (invalid.email === "" && invalid.password === "" && invalid.phoneNumber === "") {
+			e.target.disabled = true;
+
 			toast.promise(
 				signup(form.email, form.password, form.phoneNumber).then((res) => { return res.data.message }),
 				{
@@ -72,13 +74,13 @@ function SignUp() {
 	document.title = "Sign Up";
 
 	return (
-		<div className="body-wrapper grid lg:grid-cols-2 md:grid-cols-1 grid-rows-1">
-			<section className="image-holder lg:bg-cover lg:auth-bg md:block"></section>
-			<section className="text-holderj flex flex-col font-rubik">
+		<div className="body-wrapper grid lg:grid-cols-2 grid-cols-1 grid-rows-1">
+			<section className="image-holder lg:bg-cover lg:auth-bg block"></section>
+			<section className="text-holder flex flex-col font-rubik">
 				<HeaderAuth pageTitle={"Sign Up"} />
-				<main className="lg:py-16 lg:px-2 md:p-12 lg:my-16 lg:mx-0 md:m-0 lg:bg-none md:auth-bg md:bg-cover md:bg-center">
-					<div className="form-wrapper flex flex-col items-center lg:py-6 lg:px-4 md:p-12 gap-[0.38rem] lg:border-none md:border md:border-solid md:border-[rgba(209,213,219,0.3)] lg:rounded-none md:rounded-[12px] lg:bg-white md:bg-[rgba(255,255,255,0.884)]">
-						<form className="flex flex-col gap-4 w-[31.56rem]">
+				<main className="lg:py-16 lg:px-2 px-3 py-12 md:p-12 lg:my-16 lg:mx-0 md:m-0 lg:bg-none auth-bg bg-cover bg-center">
+					<div className="form-wrapper flex flex-col items-center py-8 lg:py-6 lg:px-4 md:p-12 gap-[0.38rem] lg:border-none border border-solid border-[rgba(209,213,219,0.3)] lg:rounded-none rounded-[12px] lg:bg-white bg-white/30 backdrop-filter backdrop-blur-xl">
+						<form className="flex flex-col gap-4 w-11/12 md:w-[31.56rem]">
 							<div className="form-content-wrapper flex flex-col gap-2">
 								<label htmlFor="email" className="font-bold text-first-gray text-[1.13rem]">
 									Email Address :
@@ -88,7 +90,7 @@ function SignUp() {
 									name="email"
 									placeholder="Enter your email address"
 									id="email-input"
-									className="input-h rounded-[20px] lg:border lg:border-solid md:border-none text-base pl-8"
+									className="input-h rounded-[20px] focus:border-first-green outline-none lg:border lg:border-solid border-none transition-all duration-300 text-base pl-8"
 									value={form.email}
 									onChange={onChangeForm}
 								/>
@@ -98,15 +100,32 @@ function SignUp() {
 								<label htmlFor="password" className="font-bold text-first-gray text-[1.13rem]">
 									Password :
 								</label>
-								<input
-									type="password"
-									name="password"
-									placeholder="Enter your password"
-									id="pwd-input"
-									className="input-h rounded-[20px] lg:border lg:border-solid md:border-none text-base pl-8"
-									value={form.password}
-									onChange={onChangeForm}
-								/>
+								<div className="w-full relative">
+									<input
+										type={visible ? "text" : "password"}
+										name="password"
+										placeholder="Enter your password"
+										id="pwd-input"
+										className="input-h w-full rounded-[20px] focus:border-first-green outline-none lg:border lg:border-solid border-none transition-all duration-300 text-base pl-8"
+										value={form.password}
+										onChange={onChangeForm}
+									/>
+									{!visible ? (
+                    <i
+                      onClick={() => setVisible(!visible)}
+                      className="material-icons-outlined absolute top-[25px] right-[15px] cursor-pointer"
+                    >
+                      visibility
+                    </i>
+                  ) : (
+                    <i
+                      onClick={() => setVisible(!visible)}
+                      className="material-icons-outlined absolute top-[25px] right-[15px] cursor-pointer"
+                    >
+                      visibility_off
+                    </i>
+                  )}
+								</div>
 								{error.password !== "" ? <div className="font-poppins text-red-700">{error.password}</div> : null}
 							</div>
 							<div className="form-content-wrapper flex flex-col gap-2">
@@ -114,11 +133,11 @@ function SignUp() {
 									Phone Number :
 								</label>
 								<input
-									type="phone-number"
+									type="number"
 									name="phoneNumber"
 									placeholder="Enter your phone number"
 									id="phone-input"
-									className="input-h rounded-[20px] lg:border lg:border-solid md:border-none text-base pl-8"
+									className="input-h [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none rounded-[20px] focus:border-first-green outline-none lg:border lg:border-solid border-none transition-all duration-300 text-base pl-8"
 									value={form.phoneNumber}
 									onChange={onChangeForm}
 								/>
@@ -128,7 +147,8 @@ function SignUp() {
 								<button
 									type="button"
 									id="signup-btn"
-									className="w-full h-[4.7rem] rounded-[20px] border-none text-first-brown font-extrabold text-xl bg-first-yellow shadow-[0px_6px_20px_rgba(255,186,51, 0.4)] cursor-pointer"
+									disabled={!form.email || !form.password || !form.phoneNumber}
+									className="w-full h-[4.7rem] rounded-[20px] no-underline text-first-brown hover:text-white disabled:text-fifth-gray font-extrabold text-xl bg-first-yellow hover:bg-first-brown disabled:bg-gray-400 shadow-[0px_6px_20px_rgba(255,186,51,0.4)] hover:shadow-[0px_6px_20px_rgba(106,64,41,0.63)] disabled:shadow-none cursor-pointer disabled:cursor-not-allowed transition-all duration-300"
 									onClick={signupHandler}
 								>
 									Sign Up
@@ -142,22 +162,22 @@ function SignUp() {
 								</button>
 							</div>
 						</form>
-						<div className="login-wrapper flex flex-col items-center gap-4 my-2 mx-0 w-[31.56rem]">
-							<div className="question-wrapper flex flex-row items-center">
+						<div className="login-wrapper flex flex-col items-center gap-4 my-2 mx-0 w-11/12 md:w-[31.56rem]">
+							<div className="question-wrapper flex flex-row justify-center items-center w-full">
 								<p
 									id="line"
-									className="border-b-2 border-solid border-b-third-gray font-medium py-0 px-[1.4rem]"
+									className="border-b-2 border-solid border-b-third-gray font-medium py-0 w-1/5 md:w-1/4 px-[1.4rem]"
 								></p>
-								<p id="question" className="lg:my-0 lg:mx-1 md:m-0 text-second-gray">
+								<p id="question" className="lg:my-0 lg:mx-1 md:m-0 text-second-gray px-2 md:px-4">
 									Already have an account?
 								</p>
 								<p
 									id="line"
-									className="border-b-2 border-solid border-b-third-gray font-medium py-0 px-[1.4rem]"
+									className="border-b-2 border-solid border-b-third-gray font-medium py-0 w-1/5 md:w-1/4 px-[1.4rem]"
 								></p>
 							</div>
 							<button
-								className="w-full h-[4.7rem] rounded-[20px] border-none text-white bg-first-brown shadow-[0px_6px_20px_rgba(106,64,41,0.63)] font-extrabold text-xl cursor-pointer"
+								className="w-full h-[4.7rem] rounded-[20px] border-none text-white hover:text-first-brown bg-first-brown hover:bg-first-yellow shadow-[0px_6px_20px_rgba(106,64,41,0.63)] hover:shadow-[0px_6px_20px_rgba(255,186,51,0.4)] transition-all duration-300 font-extrabold text-xl cursor-pointer"
 								onClick={() => navigate("/login")}
 							>
 								Login

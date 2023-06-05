@@ -1,4 +1,6 @@
 import React from "react";
+import { DateTime } from "luxon";
+import { Link } from "react-router-dom";
 
 import coffeeLogo from "../assets/icon/coffee-shop-logo.webp";
 import fbLogo from "../assets/icon/facebook-circle.svg";
@@ -6,14 +8,16 @@ import igLogo from "../assets/icon/instagram-circle.svg";
 import twitterLogo from "../assets/icon/twitter.svg";
 
 function FooterAuth() {
+	const currentYear = DateTime.now().year;
+
 	return (
 		<footer className="py-14 px-0 bg-first-white">
-			<div className="footer-wrapper flex flex-row justify-around lg:py-10 md:p-0">
+			<div className="footer-wrapper flex flex-row justify-around lg:py-10 p-0">
 				<div className="identity flex flex-col p-4 justify-center gap-6">
-					<div className="brand flex items-center text-first-black no-underline font-bold text-[1.19rem] font-rubik">
+					<Link to={"/"} className="brand flex items-center text-first-black no-underline font-bold text-[1.19rem] font-rubik">
 						<img src={coffeeLogo} alt="coffee shop logo" className="brand-img" />
 						Coffee Shop
-					</div>
+					</Link>
 					<p className="font-medium text-first-gray">
 						Coffee Shop is a store that sells some
 						<br />
@@ -33,11 +37,11 @@ function FooterAuth() {
 						</a>
 					</div>
 					<p id="copyright" className="font-normal text-second-gray">
-						&copy;2020CoffeeStore
+						&copy;{currentYear}CoffeeShop
 					</p>
 				</div>
-				<div className="links grid grid-cols-1 grid-rows-2 lg:gap-10 md:gap-0 lg:p-4 md:p-0">
-					<div className="products flex flex-col lg:gap-4 md:gap-2">
+				<div className="links grid grid-cols-1 grid-rows-2 lg:gap-10 gap-0 lg:p-4 p-0">
+					<div className="products flex flex-col lg:gap-4 gap-2">
 						<div className="title font-medium text-first-black">Product</div>
 						<div className="list grid grid-cols-2 grid-rows-3 list-none gap-2">
 							<li>
@@ -67,7 +71,7 @@ function FooterAuth() {
 							</li>
 						</div>
 					</div>
-					<div className="engages flex flex-col lg:gap-4 md:gap-2">
+					<div className="engages flex flex-col lg:gap-4 gap-2">
 						<div className="title font-medium text-first-black">Engage</div>
 						<div className="list grid grid-cols-2 grid-rows-3 list-none gap-2">
 							<li>

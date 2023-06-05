@@ -12,16 +12,18 @@ export const Notification = () => {
 					border: "none",
 					padding: "1rem",
 					color: "#713200",
+					fontSize: "17px",
+					marginTop: "2rem",
 				}
 			}}
 		>
 			{(t) => (
-				<ToastBar toast={t}>
+				<ToastBar className={`flex items-center`} toast={t}>
 					{({ icon, message }) => (
 						<>
 							{icon}
 							{message}
-							{t.type !== "loading" && <button onClick={() => toast.dismiss(t.id)}><i className="material-icons">close</i></button>}
+							{t.type !== "loading" && <button className="flex justify-center items-center" onClick={() => toast.dismiss(t.id)}><i className="material-icons">close</i></button>}
 						</>
 					)}
 				</ToastBar>

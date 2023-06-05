@@ -59,9 +59,11 @@ export const editPwd = (oldPwd, newPwd, token) => {
   });
 };
 
-export const logout = (token) => {
+export const logout = (token, controller) => {
   const url = `${baseUrl}/auth/logout`;
-  return axios.patch(url, {}, {
+  const config = {
     headers: { Authorization: `Bearer ${token}` },
-  });
+    signal: controller.signal,
+  };
+  return axios.patch(url, {}, config);
 }
