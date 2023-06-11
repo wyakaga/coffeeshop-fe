@@ -107,7 +107,7 @@ function ProductDetail() {
 		<div className="body-wrapper grid grid-cols-1 grid-rows-1">
 			{isLoading && <Loader />}
 			<Header title="product" />
-			<main className="bg-eighth-white relative pt-10 pb-40 px-12">
+			<main className="bg-eighth-white relative pt-10 pb-40 md:px-12">
 				<section className="main-wrapper flex flex-col lg:flex-row justify-center gap-20 lg:gap-60 py-12 px-10 lg:px-0">
 					<section className="left-content flex flex-col gap-12">
 						<div className="product-dir font-rubik font-normal text-xl text-first-gray">
@@ -139,7 +139,7 @@ function ProductDetail() {
 							<button
 								onClick={addToCartHandler}
 								disabled={isChanged.size === "" || selectedDelivery === "" || time === null}
-								className="text-white hover:text-first-brown disabled:text-fifth-gray bg-first-brown hover:bg-first-yellow disabled:bg-gray-400 rounded-[20px] p-6 transition-colors duration-300"
+								className="text-white hover:text-first-brown disabled:text-fifth-gray bg-first-brown hover:bg-first-yellow disabled:bg-gray-400 rounded-[20px] p-6 disabled:cursor-not-allowed transition-colors duration-300"
 							>
 								Add to Cart
 							</button>
@@ -149,7 +149,7 @@ function ProductDetail() {
 						</div>
 					</section>
 					<section className="right-content flex flex-col gap-16">
-						<div className="desc-size-wrapper flex flex-col gap-y-12 bg-white rounded-[20px] p-16">
+						<div className="desc-size-wrapper flex flex-col gap-y-12 bg-white rounded-[20px] p-4 md:p-16">
 							<div className="delivery-desc font-poppins font-normal text-[1.5625rem] text-first-brown">
 								<p>
 									Delivery only on{" "}
@@ -167,8 +167,8 @@ function ProductDetail() {
 							</div>
 							<div className="size-btn flex flex-col gap-y-4">
 								<p className="text-center font-poppins font-bold text-2xl">Choose a size</p>
-								<div className="flex flex-row gap-x-20 justify-center">
-									<div className="deliv-btn font-poppins w-[4.375rem] h-[4.375rem] flex justify-center items-center">
+								<div className="flex flex-row gap-x-14 md:gap-x-20 justify-center">
+									<div className="size-btn font-poppins w-[4.375rem] h-[4.375rem] flex justify-center items-center">
 										<input
 											type="radio"
 											name="size"
@@ -184,7 +184,7 @@ function ProductDetail() {
 											<p className="text-center">R</p>
 										</label>
 									</div>
-									<div className="deliv-btn font-poppins w-[4.375rem] h-[4.375rem] flex justify-center items-center">
+									<div className="size-btn font-poppins w-[4.375rem] h-[4.375rem] flex justify-center items-center">
 										<input
 											type="radio"
 											name="size"
@@ -200,7 +200,7 @@ function ProductDetail() {
 											<p className="text-center">L</p>
 										</label>
 									</div>
-									<div className="deliv-btn font-poppins w-[4.375rem] h-[4.375rem] flex justify-center items-center">
+									<div className="size-btn font-poppins w-[4.375rem] h-[4.375rem] flex justify-center items-center">
 										<input
 											type="radio"
 											name="size"
@@ -224,7 +224,7 @@ function ProductDetail() {
 								<p className="font-poppins font-bold text-xl text-center">
 									Choose Delivery Methods
 								</p>
-								<div className="delivery-btn font-poppins flex flex-row gap-x-8">
+								<div className="delivery-btn font-poppins flex flex-row md:gap-x-8">
 									<div className="deliv-btn font-poppins">
 										<input
 											type="radio"
@@ -295,7 +295,7 @@ function ProductDetail() {
 						</div>
 					</section>
 					<section className="floating flex flex-col lg:flex-row items-center gap-y-8 lg:gap-x-10 lg:absolute bottom-[-70px]">
-						<div className="product-qty flex flex-row justify-center gap-x-40 lg:gap-x-80 w-full lg:w-3/4 bg-white rounded-[20px] py-8 px-20">
+						<div className="product-qty flex flex-col md:flex-row justify-center md:gap-x-5 lg:gap-x-80 w-full lg:w-3/4 bg-white rounded-[20px] py-8 px-20">
 							<div className="product-info flex flex-row items-center justify-center gap-x-8">
 								<div className="product-img w-[100px] h-[100px] rounded-full overflow-hidden">
 									<img
@@ -351,7 +351,7 @@ function ProductDetail() {
 							<button
 								onClick={() => navigate("/payment")}
 								disabled={isChanged.size === "" || selectedDelivery === "" || time === null}
-								className="bg-first-yellow hover:bg-first-brown disabled:bg-gray-400 text-black hover:text-white disabled:text-fifth-gray border-none rounded-[20px] font-poppins font-bold text-2xl py-8 lg:py-16 lg:px-20 w-full transition-all duration-300"
+								className="bg-first-yellow hover:bg-first-brown disabled:bg-gray-400 text-black hover:text-white disabled:text-fifth-gray border-none rounded-[20px] font-poppins font-bold text-2xl py-8 lg:py-16 lg:px-20 w-full disabled:cursor-not-allowed transition-all duration-300"
 							>
 								CHECKOUT
 							</button>

@@ -9,6 +9,7 @@ import { logout } from "../utils/https/auth";
 import { authAction } from "../redux/slices/auth";
 import { cartAction } from "../redux/slices/cart";
 import { historyAction } from "../redux/slices/history";
+import { userAction } from "../redux/slices/user";
 
 import coffeeLogo from "../assets/icon/coffee-shop-logo.webp";
 import searchLogo from "../assets/icon/search.svg";
@@ -21,8 +22,8 @@ function Header(props) {
   const controller = useMemo(() => new AbortController(), []);
 
   const token = useSelector((state) => state.auth.data.token);
-  const img = useSelector((state) => state.auth.data.data?.img);
-  const name = useSelector((state) => state.auth.data.data?.display_name);
+  const img = useSelector((state) => state.user.isChanged ? state.user?.data?.img  : state.auth.data?.data?.img);
+  const name = useSelector((state) => state.user.isChanged ? state.user?.data?.display_name : state.auth.data?.data?.display_name);
 
   const [keyword, setKeyword] = useState("");
   const [toggleState, setToggleState] = useState(false);
@@ -40,6 +41,7 @@ function Header(props) {
         dispatch(authAction.delete());
         dispatch(cartAction.resetCart());
         dispatch(historyAction.reset());
+        dispatch(userAction.reset());
       }),
       {
         loading: () => {
@@ -48,7 +50,8 @@ function Header(props) {
         },
         success: "See you!",
         error: "Something went wrong",
-      }
+      },
+      { success: { duration: Infinity } }
     );
   };
 

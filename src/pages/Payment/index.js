@@ -1,7 +1,7 @@
 import React from "react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Fragment } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Dialog } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { toast } from "react-hot-toast";
 
 import { getUser } from "../../utils/https/user";
@@ -33,7 +33,7 @@ function Payment() {
 	const grandTotal = subtotalOnCart + taxAndFee + shippingFee;
 
 	const [userData, setUserData] = useState([]);
-	const [form, setForm] = useState({ address: "", "address-details": "", "phone-number": null });
+	const [form, setForm] = useState({ address: "", "address-details": "", "phone-number": "" });
 	const [paymentMethod, setPaymentMethod] = useState(0);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -111,9 +111,9 @@ function Payment() {
 							Checkout your <br /> item now!
 						</p>
 					</section>
-					<section className="page-content flex lg:flex-row md:flex-col md:gap-y-5 lg:justify-between lg:gap-x-44">
+					<section className="page-content flex lg:flex-row flex-col gap-y-5 lg:justify-between lg:gap-x-44">
 						<section className="left-side lg:w-1/2 lg:min-h-[631.6px]">
-							<div className="order-container bg-white shadow-[0px_10px_40px_rgba(0,0,0,0.35)] rounded-[20px] flex flex-col justify-evenly px-16 pt-20 pb-20 gap-y-20 h-full">
+							<div className="order-container bg-white shadow-[0px_10px_40px_rgba(0,0,0,0.35)] rounded-[20px] flex flex-col justify-evenly px-5 py-10 md:px-16 md:pt-20 md:pb-20 gap-y-20 h-full">
 								<div className="order-title">
 									<p className="font-poppins font-bold text-4xl text-third-brown text-center">
 										Order Summary
@@ -257,90 +257,115 @@ function Payment() {
 							<button
 								onClick={payHandler}
 								disabled={paymentMethod === 0 || cartData.length < 1}
-								className="bg-second-brown hover:bg-first-yellow text-white hover:text-black disabled:bg-gray-400 disabled:text-fifth-gray transition-all duration-300 shadow-[0px_10px_20px_rgba(137,85,55,0.4)] rounded-[20px] w-full p-5"
+								className="bg-second-brown hover:bg-first-yellow text-white hover:text-black disabled:bg-gray-400 disabled:text-fifth-gray transition-all duration-300 shadow-[0px_10px_20px_rgba(137,85,55,0.4)] rounded-[20px] disabled:cursor-not-allowed w-full p-5"
 							>
 								<p className="font-poppins font-bold text-xl text-center">Confirm and Pay</p>
 							</button>
 						</section>
 					</section>
 				</section>
-				<Dialog
-					open={isDialogOpen}
-					onClose={closeHandler}
-					className="fixed z-[51] bg-white/40 backdrop-filter backdrop-blur-md inset-0 overflow-y-auto"
-				>
-					<div className="flex items-center justify-center min-h-screen">
-						<div className="bg-white w-3/4 lg:w-1/2 p-16 rounded-lg shadow-lg text-center z-[52] relative">
-							<h2 className="text-2xl font-rubik font-bold mb-2">Address details</h2>
-							<form className="flex flex-col gap-y-6">
-								<div className="flex flex-col items-start gap-y-3">
-									<label
-										htmlFor="address"
-										className="font-medium font-poppins text-xl text-sixth-gray"
-									>
-										Your address
-									</label>
-									<input
-										value={form.address}
-										onChange={onChangeForm}
-										type="text"
-										id="address"
-										name="address"
-										placeholder="Fill your address here"
-										className="outline-0 border-b-2 font-poppins font-normal text-xl w-full focus:border-b-first-green transition-all duration-300 ease-in-out"
-									/>
-								</div>
-								<div className="flex flex-col items-start gap-y-3">
-									<label
-										htmlFor="address-details"
-										className="font-medium font-poppins text-xl text-sixth-gray"
-									>
-										Your address details
-									</label>
-									<textarea
-										value={form["address-details"]}
-										onChange={onChangeForm}
-										type="text"
-										id="address-details"
-										name="address-details"
-										placeholder="Fill your address details here"
-										className="relative placeholder:absolute placeholder:bottom-0 outline-0 resize-none border-b-2 font-poppins font-normal text-xl w-full focus:border-b-first-green transition-all duration-300 ease-in-out"
-									></textarea>
-								</div>
-								<div className="flex flex-col items-start gap-y-3">
-									<label
-										htmlFor="phone-number"
-										className="font-medium font-poppins text-xl text-sixth-gray"
-									>
-										Your address
-									</label>
-									<input
-										value={form["phone-number"]}
-										onChange={onChangeForm}
-										type="number"
-										id="phone-number"
-										name="phone-number"
-										placeholder="Fill your phone number here"
-										className="outline-0 border-b-2 font-poppins font-normal text-xl w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:border-b-first-green transition-all duration-300 ease-in-out"
-									/>
-								</div>
-							</form>
-							<div className="absolute top-0 right-0">
-								<div className="group relative flex">
-									<i
-										onClick={closeHandler}
-										className="material-icons text-5xl text-rose-600 hover:text-rose-700 transition-all duration-300 cursor-pointer"
-									>
-										cancel
-									</i>
-									<span className="absolute top-12 -right-2 scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
-										Close
-									</span>
-								</div>
+				<Transition appear show={isDialogOpen} as={Fragment}>
+					<Dialog
+						as="div"
+						onClose={closeHandler}
+						className="relative z-[51]"
+					>
+						<Transition.Child
+							as={Fragment}
+							enter="ease-out duration-300"
+							enterFrom="opacity-0"
+							enterTo="opacity-100"
+							leave="ease-in duration-200"
+							leaveFrom="opacity-100"
+							leaveTo="opacity-0"
+						>
+							<div className="fixed bg-white/40 backdrop-filter backdrop-blur-md inset-0 overflow-y-auto" />
+						</Transition.Child>
+						<div className="fixed inset-0 overflow-y-auto">
+							<div className="flex items-center justify-center min-h-screen">
+								<Transition.Child
+									as={Fragment}
+									enter="ease-out duration-300"
+									enterFrom="opacity-0 scale-95"
+									enterTo="opacity-100 scale-100"
+									leave="ease-in duration-200"
+									leaveFrom="opacity-100 scale-100"
+									leaveTo="opacity-0 scale-95"
+								>
+									<Dialog.Panel className="bg-white w-3/4 lg:w-1/2 p-16 rounded-lg shadow-[0px_4px_20px_rgba(0,0,0,0.1)] text-center z-[52] relative">
+										<Dialog.Title className="text-2xl font-rubik font-bold mb-2">Address details</Dialog.Title>
+										<form className="flex flex-col gap-y-6">
+											<div className="flex flex-col items-start gap-y-3">
+												<label
+													htmlFor="address"
+													className="font-medium font-poppins text-xl text-sixth-gray"
+												>
+													Your address
+												</label>
+												<input
+													value={form.address}
+													onChange={onChangeForm}
+													type="text"
+													id="address"
+													name="address"
+													placeholder="Fill your address here"
+													className="outline-0 border-b-2 font-poppins font-normal text-xl w-full focus:border-b-first-green transition-all duration-300 ease-in-out"
+												/>
+											</div>
+											<div className="flex flex-col items-start gap-y-3">
+												<label
+													htmlFor="address-details"
+													className="font-medium font-poppins text-xl text-sixth-gray"
+												>
+													Your address details
+												</label>
+												<textarea
+													value={form["address-details"]}
+													onChange={onChangeForm}
+													type="text"
+													id="address-details"
+													name="address-details"
+													placeholder="Fill your address details here"
+													className="relative placeholder:absolute placeholder:bottom-0 outline-0 resize-none border-b-2 font-poppins font-normal text-xl w-full focus:border-b-first-green transition-all duration-300 ease-in-out"
+												></textarea>
+											</div>
+											<div className="flex flex-col items-start gap-y-3">
+												<label
+													htmlFor="phone-number"
+													className="font-medium font-poppins text-xl text-sixth-gray"
+												>
+													Your address
+												</label>
+												<input
+													value={form["phone-number"]}
+													onChange={onChangeForm}
+													type="number"
+													id="phone-number"
+													name="phone-number"
+													placeholder="Fill your phone number here"
+													className="outline-0 border-b-2 font-poppins font-normal text-xl w-full [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:border-b-first-green transition-all duration-300 ease-in-out"
+												/>
+											</div>
+										</form>
+										<div className="absolute top-0 right-0">
+											<div className="group relative flex">
+												<i
+													onClick={closeHandler}
+													className="material-icons text-5xl text-rose-600 hover:text-rose-700 transition-all duration-300 cursor-pointer"
+												>
+													cancel
+												</i>
+												<span className="absolute top-12 -right-2 scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
+													Close
+												</span>
+											</div>
+										</div>
+									</Dialog.Panel>
+								</Transition.Child>
 							</div>
 						</div>
-					</div>
-				</Dialog>
+					</Dialog>
+				</Transition>
 			</main>
 			<Footer />
 		</div>

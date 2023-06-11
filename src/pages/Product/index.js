@@ -220,14 +220,14 @@ function Product() {
 							</li>
 						</div>
 					</section>
-					<section className="right-content flex flex-col py-8 px-20 gap-20 col-span-4">
-						<div className="flex flex-row justify-between">
+					<section className="right-content flex flex-col py-8 md:px-20 px-8 gap-20 col-span-4">
+						<div className="flex flex-col gap-y-2 md:gap-y-0 md:flex-row justify-between">
 							<div>
 								<div className="relative">
 									<input
 										type="text"
 										placeholder="Search here..."
-										className="border border-gray-300 hover:border-gray-400 focus:outline-none appearance-none bg-white rounded-md h-10 pl-5 pr-10"
+										className="border border-gray-300 w-full md:w-auto hover:border-gray-400 focus:outline-none appearance-none bg-white rounded-md h-10 pl-5 pr-10"
 										onChange={debouncedSearch}
 									/>
 									<img
@@ -240,7 +240,7 @@ function Product() {
 							<div>
 								<div className="relative">
 									<svg
-										className="w-2 h-2 absolute top-0 left-[110px] m-4 pointer-events-none"
+										className="w-2 h-2 absolute top-0 -right-1 md:left-[110px] m-4 pointer-events-none"
 										xmlns="http://www.w3.org/2000/svg"
 										viewBox="0 0 412 232"
 									>
@@ -251,7 +251,7 @@ function Product() {
 										/>
 									</svg>
 									<select
-										className="border border-gray-300 rounded-md text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
+										className="border w-full md:w-auto border-gray-300 rounded-md text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-gray-400 focus:outline-none appearance-none"
 										name="price-sort"
 										id="price-sort"
 										onChange={handleSort}
@@ -268,7 +268,7 @@ function Product() {
 								return (
 									<p
 										key={idx}
-										className={`font-rubik text-xl m-0 border-b-[3px] border-solid cursor-pointer transition-colors duration-300 ${
+										className={`font-rubik md:text-xl text-sm m-0 border-b-[3px] border-solid cursor-pointer transition-colors duration-300 ${
 											idx === activeTabIndex
 												? "font-bold text-first-brown border-b-first-brown"
 												: "font-normal text-fourth-gray border-b-transparent hover:border-b-gray-200"
@@ -286,7 +286,7 @@ function Product() {
 							className={`products-content min-h-[852.8px] w-full ${
 								isNotFound === false &&
 								isLoading === false &&
-								"grid grid-cols-4 grid-rows-3 gap-y-20 gap-x-8"
+								"grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 grid-rows-3 gap-y-20 gap-x-8"
 							}`}
 						>
 							{isLoading === true ? (
