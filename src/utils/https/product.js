@@ -31,3 +31,23 @@ export const getProductDetails = id => {
 	const url = `${baseUrl}/products/${id}`;
 	return axios.get(url);
 };
+
+export const editProduct = (img, name, price, description, id, token, controller) => {
+	const body = new FormData();
+
+	body.append("img", img);
+	body.append("name", name);
+	body.append("price", price);
+	body.append("description", description);
+
+	const url = `${baseUrl}/products/${id}`;
+	const config = {
+		headers: {
+			Authorization: `Bearer ${token}`,
+			"Content-Type": "multipart/form-data",
+		},
+		signal: controller.signal,
+	}
+
+	return axios.patch(url, body, config);
+}

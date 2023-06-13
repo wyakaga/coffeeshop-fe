@@ -1,8 +1,8 @@
 <h1 id="title" align="center">Coffe Shop Frontend</h1>
 
-<p align="center"><img src="https://socialify.git.ci/wyakaga/coffeeshop-fe/image?description=1&amp;descriptionEditable=A%20frontend%20for%20%22Coffee%20Shop%22%20website&amp;language=1&amp;name=1&amp;owner=1&amp;pattern=Overlapping%20Hexagons&amp;theme=Dark" alt="project-image"></p>
-
-This repository contains codes for "Coffee Shop" website. You can view the [mobile app version](https://github.com/wyakaga/coffee-shop-mobile) and the [API](https://github.com/wyakaga/coffeeshop-backend)
+This repository contains codes for "Coffee Shop" web application. "Coffee Shop" is a web application built using React that allows users to browse and order
+food and beverage products online. Users can create accounts, view menus, and place orders for
+pickup or delivery.
 
 <h2>💻 Built with</h2>
 
@@ -60,3 +60,8 @@ You can click the demo site [here!](https://coffeeshop-fe.vercel.app/)
 <h2>🛡️ License:</h2>
 
 This project is licensed under the ISC license
+
+<h2>Related Projects</h2>
+
+* [Coffee Shop Back-End (The API for this project)](https://github.com/wyakaga/coffeeshop-backend)
+* [Coffee Shop Mobile (Mobile app version of this project)](https://github.com/wyakaga/coffee-shop-mobile)
