@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-hot-toast";
 import { Transition, Dialog } from "@headlessui/react";
 
-import { getProductDetails, editProduct } from "../../utils/https/product";
+import {
+  getProductDetails,
+  editProduct,
+  deleteProduct,
+} from "../../utils/https/product";
 import { cartAction } from "../../redux/slices/cart";
 
 import Footer from "../../components/Footer";
@@ -29,25 +33,28 @@ function ProductDetail() {
   const [time, setTime] = useState(null);
   const [isChanged, setIsChanged] = useState({ size: "" });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [productName, setProductName] = useState('');
+  const [productName, setProductName] = useState("");
   const [productPrice, setProductPrice] = useState(0);
-  const [productDescription, setProductDescription] = useState('');
+  const [productDescription, setProductDescription] = useState("");
 
   useEffect(() => {
     setIsLoading(true);
-    getProductDetails(id)
+    getProductDetails(id, controller)
       .then((res) => {
         setDataProduct(res["data"]["data"]);
         setIsLoading(false);
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       })
       .catch((err) => {
         console.log(err);
         setIsLoading(false);
+        window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
       });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (dataProduct.length) {
@@ -163,27 +170,67 @@ function ProductDetail() {
 
   const onProductPriceChange = (e) => {
     setProductPrice(e.target.value);
-  }
+  };
 
   const onProductDescChange = (e) => {
     setProductDescription(e.target.value);
-  }
+  };
 
   const editProductHandler = (e) => {
-    toast.promise(editProduct(image, productName, productPrice, productDescription, dataProduct[0]["id"], token, controller), {
+    toast.promise(
+      editProduct(
+        image,
+        productName,
+        productPrice,
+        productDescription,
+        dataProduct[0]["id"],
+        token,
+        controller
+      ),
+      {
+        loading: () => {
+          e.target.disabled = true;
+          return <>Loading...</>;
+        },
+        success: (res) => {
+          e.target.disabled = false;
+          setDataProduct([
+            {
+              ...dataProduct[0],
+              img: res.data.data.img,
+              name: res.data.data.name,
+              price: res.data.data.price,
+              description: res.data.data.description,
+            },
+          ]);
+          closeHandler();
+          return <>Succesfully update product data</>;
+        },
+        error: () => {
+          e.target.disabled = false;
+          closeHandler();
+          return <>Something went wrong</>;
+        },
+      }
+    );
+  };
+
+  const deleteProductHandler = (e) => {
+    toast.promise(deleteProduct(id, token, controller), {
       loading: () => {
         e.target.disabled = true;
-        return <>Loading...</>
+        return <>Deleting product...</>;
       },
       success: () => {
         e.target.disabled = false;
-        return <>Succesfully update product data</>
+        navigate("/products");
+        return <>Successfully delete product</>;
       },
       error: () => {
         e.target.disabled = false;
-        return <>Something went wrong</>
-      }
-    })
+        return <>Something went wrong</>;
+      },
+    });
   };
 
   document.title = dataProduct[0] ? dataProduct[0]["name"] : "Product details";
@@ -245,6 +292,14 @@ function ProductDetail() {
               >
                 {adminRole === 1 ? "Edit Product" : "Ask a Staff"}
               </button>
+              {adminRole === 1 && (
+                <button
+                  onClick={() => setIsDeleteDialogOpen(true)}
+                  className="text-white bg-black hover:bg-red-600 rounded-[20px] p-6 transition-colors duration-300"
+                >
+                  Delete Menu
+                </button>
+              )}
             </div>
           </section>
           <section className="right-content flex flex-col gap-16">
@@ -431,7 +486,7 @@ function ProductDetail() {
                   >
                     <i className="material-icons font-black">remove</i>
                   </button>
-                  <span className="absolute top-12 -right-12 scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
+                  <span className="absolute top-12 -right-12 font-poppins scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
                     Decrease quantities
                   </span>
                 </div>
@@ -445,7 +500,7 @@ function ProductDetail() {
                   >
                     <i className="material-icons font-black">add</i>
                   </button>
-                  <span className="absolute top-12 -right-12 scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
+                  <span className="absolute top-12 -right-12 font-poppins scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
                     Increase quantities
                   </span>
                 </div>
@@ -596,7 +651,10 @@ function ProductDetail() {
                           />
                         </div>
                       </form>
-                      <button onClick={(e) => editProductHandler(e)} className="w-3/4 rounded-md p-4 font-bold font-poppins text-xl bg-first-yellow hover:bg-first-brown disabled:bg-gray-400 text-first-brown hover:text-first-yellow disabled:text-fifth-gray disabled:cursor-not-allowed duration-300">
+                      <button
+                        onClick={(e) => editProductHandler(e)}
+                        className="w-3/4 rounded-md p-4 font-bold font-poppins text-xl bg-first-yellow hover:bg-first-brown disabled:bg-gray-400 text-first-brown hover:text-first-yellow disabled:text-fifth-gray disabled:cursor-not-allowed duration-300"
+                      >
                         Save Changes
                       </button>
                     </div>
@@ -611,6 +669,60 @@ function ProductDetail() {
                         <span className="absolute top-12 -right-2 font-poppins scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
                           Close
                         </span>
+                      </div>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </Dialog>
+        </Transition>
+        <Transition appear show={isDeleteDialogOpen} as={Fragment}>
+          <Dialog
+            as="div"
+            onClose={() => setIsDeleteDialogOpen(false)}
+            className="relative z-[51]"
+          >
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0"
+              enterTo="opacity-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <div className="fixed bg-white/40 backdrop-filter backdrop-blur-md inset-0 overflow-y-auto" />
+            </Transition.Child>
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex items-center justify-center min-h-screen">
+                <Transition.Child
+                  as={Fragment}
+                  enter="ease-out duration-300"
+                  enterFrom="opacity-0 scale-95"
+                  enterTo="opacity-100 scale-100"
+                  leave="ease-in duration-200"
+                  leaveFrom="opacity-100 scale-100"
+                  leaveTo="opacity-0 scale-95"
+                >
+                  <Dialog.Panel className="bg-white gap-y-10 flex flex-col w-3/4 lg:w-1/2 p-16 rounded-lg shadow-[0px_4px_20px_rgba(0,0,0,0.1)] text-center z-[52] relative">
+                    <Dialog.Title className="text-4xl font-rubik font-bold mb-2">
+                      Are you sure?
+                    </Dialog.Title>
+                    <div className="flex justify-center items-center">
+                      <div className="flex justify-center items-center gap-x-5 w-full">
+                        <button
+                          onClick={(e) => deleteProductHandler(e)}
+                          className="bg-first-brown text-white font-poppins font-bold text-2xl w-1/4 h-16 px-4 py-2 rounded-[20px] duration-300 hover:text-first-brown hover:bg-first-yellow disabled:text-fifth-gray disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                          Yes
+                        </button>
+                        <button
+                          onClick={() => setIsDeleteDialogOpen(false)}
+                          className="bg-first-yellow text-first-brown font-poppins font-bold text-2xl w-1/4 h-16 px-4 py-2 rounded-[20px] duration-300 hover:text-white hover:bg-first-brown"
+                        >
+                          No
+                        </button>
                       </div>
                     </div>
                   </Dialog.Panel>
