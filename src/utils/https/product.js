@@ -40,6 +40,35 @@ export const getProductDetails = (id, controller) => {
   return axios.get(url, config);
 };
 
+export const createProduct = (
+  img,
+  name,
+  price,
+  description,
+  category,
+  token,
+  controller
+) => {
+  const body = new FormData();
+
+  body.append("img", img);
+  body.append("name", name);
+  body.append("price", price);
+  body.append("description", description);
+  body.append("category_id", category);
+
+  const url = `${baseUrl}/products`;
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+    signal: controller.signal,
+  };
+
+  return axios.post(url, body, config);
+};
+
 export const editProduct = (
   img,
   name,

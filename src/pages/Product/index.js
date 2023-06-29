@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import debounce from "lodash.debounce";
 import { useLottie } from "lottie-react";
 
@@ -17,6 +18,10 @@ import notFoundIllustration from "../../assets/lottie/data-not-found.json";
 import loader from "../../assets/lottie/loader.json";
 
 function Product() {
+	const navigate = useNavigate();
+
+	const adminRole = useSelector((state) => state.auth.data?.data?.role_id);
+
 	const tabsData = [
 		{ label: "Favorite & Promo" },
 		{ label: "Coffee" },
@@ -43,6 +48,7 @@ function Product() {
 
 	useEffect(() => {
 		setIsLoading(true);
+		window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 		getProduct(
 			category || searchParams.get("category"),
 			sort || searchParams.get("order"),
@@ -56,6 +62,7 @@ function Product() {
 				setMetaProduct(res["data"]["meta"]);
 				setIsNotFound(false);
 				setIsLoading(false);
+				window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 			})
 			.catch((err) => {
 				console.log(err);
@@ -63,6 +70,7 @@ function Product() {
 					setIsNotFound(true);
 					setIsLoading(false);
 				}
+				window.scrollTo({top: 0, left: 0, behavior: 'smooth'});
 			});
 	}, [category, sort, keyword, pageLimit, currentPage]);
 
@@ -95,7 +103,7 @@ function Product() {
 		setSearchParams(searchParams);
 	};
 
-	document.title = "Product";
+	document.title = "Products";
 
 	function NotFound() {
 		const options = {
@@ -335,6 +343,9 @@ function Product() {
 								*the price has been cutted by discount appears
 							</p>
 						</div>
+						{adminRole && <div className="admin-only">
+							<button onClick={() => navigate("/products/create")} className="w-full h-20 text-2xl font-poppins font-bold bg-first-brown hover:bg-first-yellow text-white hover:text-first-brown rounded-[20px] duration-300">Add new product</button>
+						</div>}
 					</section>
 				</div>
 			</main>

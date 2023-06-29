@@ -606,7 +606,7 @@ function ProductDetail() {
                             className="font-poppins font-medium text-lg"
                             htmlFor="name"
                           >
-                            Product name :
+                            Name :
                           </label>
                           <input
                             type="text"

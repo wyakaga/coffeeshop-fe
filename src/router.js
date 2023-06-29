@@ -12,70 +12,79 @@ import Profile from "./pages/Profile";
 import History from "./pages/History";
 import Product from "./pages/Product";
 import ProductDetail from "./pages/ProductDetail";
+import AddProduct from "./pages/AddProduct";
 import Payment from "./pages/Payment";
 
 const router = createBrowserRouter([
-	{
-		path: "/",
-		element: <Home />,
-		errorElement: <Error />,
-	},
-	{
-		path: "/login",
-		element: (
-			<IsLogin>
-				<Login />
-			</IsLogin>
-		),
-	},
-	{
-		path: "/signup",
-		element: (
-			<IsLogin>
-				<SignUp />
-			</IsLogin>
-		),
-	},
-	{
-		path: "/forgot",
-		element: (
-			<IsLogin>
-				<Forgot />
-			</IsLogin>
-		),
-	},
-	{
-		path: "/profile",
-		element: (
-			<PrivateRoute>
-				<Profile />
-			</PrivateRoute>
-		),
-	},
-	{
-		path: "/history",
-		element: (
-			<PrivateRoute>
-				<History />
-			</PrivateRoute>
-		),
-	},
-	{
-		path: "/payment",
-		element: (
-			<PrivateRoute>
-				<Payment />
-			</PrivateRoute>
-		),
-	},
-	{
-		path: "/products",
-		element: <Product />,
-	},
-	{
-		path: "/products/detail/:id",
-		element: <ProductDetail />,
-	},
+  {
+    path: "/",
+    element: <Home />,
+    errorElement: <Error />,
+  },
+  {
+    path: "/login",
+    element: (
+      <IsLogin>
+        <Login />
+      </IsLogin>
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <IsLogin>
+        <SignUp />
+      </IsLogin>
+    ),
+  },
+  {
+    path: "/forgot",
+    element: (
+      <IsLogin>
+        <Forgot />
+      </IsLogin>
+    ),
+  },
+  {
+    path: "/profile",
+    element: (
+      <PrivateRoute>
+        <Profile />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/history",
+    element: (
+      <PrivateRoute>
+        <History />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/payment",
+    element: (
+      <PrivateRoute>
+        <Payment />
+      </PrivateRoute>
+    ),
+  },
+  {
+    path: "/products",
+    element: <Product />,
+  },
+  {
+    path: "/products/detail/:id",
+    element: <ProductDetail />,
+  },
+  {
+    path: "/products/create",
+    element: (
+      <PrivateRoute>
+        <AddProduct />
+      </PrivateRoute>
+    ),
+  },
 ]);
 
 export default router;
