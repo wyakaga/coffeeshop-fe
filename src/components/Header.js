@@ -4,12 +4,15 @@ import { Transition, Menu, Dialog } from "@headlessui/react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
+import { DateTime } from "luxon";
 
 import { logout } from "../utils/https/auth";
 import { authAction } from "../redux/slices/auth";
 import { cartAction } from "../redux/slices/cart";
 import { historyAction } from "../redux/slices/history";
 import { userAction } from "../redux/slices/user";
+
+import Sidebar from "./Sidebar";
 
 import coffeeLogo from "../assets/icon/coffee-shop-logo.webp";
 import searchLogo from "../assets/icon/search.svg";
@@ -22,8 +25,15 @@ function Header(props) {
   const controller = useMemo(() => new AbortController(), []);
 
   const token = useSelector((state) => state.auth.data.token);
-  const img = useSelector((state) => state.user.isChanged ? state.user?.data?.img  : state.auth.data?.data?.img);
-  const name = useSelector((state) => state.user.isChanged ? state.user?.data?.display_name : state.auth.data?.data?.display_name);
+  const img = useSelector((state) =>
+    state.user.isChanged ? state.user?.data?.img : state.auth.data?.data?.img
+  );
+  const name = useSelector((state) =>
+    state.user.isChanged
+      ? state.user?.data?.display_name
+      : state.auth.data?.data?.display_name
+  );
+  const adminRole = useSelector((state) => state.auth.data?.data?.role_id);
 
   const [keyword, setKeyword] = useState("");
   const [toggleState, setToggleState] = useState(false);
@@ -46,7 +56,7 @@ function Header(props) {
       {
         loading: () => {
           e.target.disabled = true;
-          return <>Logging out...</>
+          return <>Logging out...</>;
         },
         success: "See you!",
         error: "Something went wrong",
@@ -55,13 +65,23 @@ function Header(props) {
     );
   };
 
-  let navbarActive = toggleState
-    ? "flex absolute bg-white z-10 w-full p-5 gap-8 rounded-b-lg shadow-lg left-[0px] top-[113px]"
-    : null;
+  const currentTime = DateTime.local();
+
+  let greeting = "";
+
+  if (currentTime.hour >= 5 && currentTime.hour < 12) {
+    greeting = "Good morning";
+  }
+  if (currentTime.hour >= 12 && currentTime.hour < 18) {
+    greeting = "Good afternoon";
+  }
+  if (currentTime.hour >= 18 || currentTime.hour < 5) {
+    greeting = "Good evening";
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-white/30 backdrop-filter backdrop-blur-xl">
-      <nav className="flex flex-row relative justify-between lg:justify-start p-10">
+      <nav className="flex flex-row relative justify-between lg:justify-start p-10 select-none">
         <div className="md:flex md:w-1/4 md:justify-start md:items-center md:text-first-black md:no-underline md:font-bold md:text-xl md:font-rubik">
           <Link to={"/"}>
             <div className="flex items-center text-first-black no-underline font-bold text-xl font-rubik">
@@ -81,10 +101,22 @@ function Header(props) {
             <span className="bar"></span>
           </div>
         </div>
+        <Sidebar
+          toggleState={toggleState}
+          handleToggle={handleToggle}
+          token={token}
+          adminRole={adminRole}
+          img={img}
+          name={name}
+          defaultProfile={defaultProfile}
+          greeting={greeting}
+          onInputChange={onInputChange}
+          searchLogo={searchLogo}
+          searchHandler={searchHandler}
+          setIsDialogOpen={setIsDialogOpen}
+        />
         <div
-          className={`right-nav lg:flex lg:static lg:z-0 lg:shadow-none lg:p-0 lg:rounded-none lg:gap-96 ${
-            navbarActive || "md:hidden"
-          }`}
+          className={`right-nav lg:flex lg:static lg:z-0 lg:shadow-none lg:p-0 lg:rounded-none lg:gap-96`}
         >
           <div className="flex lg:flex-row flex-col list-none items-center lg:justify-center lg:gap-8">
             <li className="flex items-center">
@@ -105,32 +137,60 @@ function Header(props) {
                     props.title === "product" ? "nav-active" : ""
                   }`}
                 >
-                  Product
+                  Products
                 </p>
               </Link>
             </li>
-            <li className="flex items-center">
-              <Link to={"/payment"}>
-                <p
-                  className={`no-underline font-rubik ${
-                    props.title === "payment" ? "nav-active" : ""
-                  }`}
-                >
-                  Your Cart
-                </p>
-              </Link>
-            </li>
-            <li className="flex items-center">
-              <Link to={"/history"}>
-                <p
-                  className={`no-underline font-rubik ${
-                    props.title === "history" ? "nav-active" : ""
-                  }`}
-                >
-                  History
-                </p>
-              </Link>
-            </li>
+            {token && adminRole === 1 ? (
+              <li className="flex items-center">
+                <Link to={"/orders"}>
+                  <p
+                    className={`no-underline font-rubik ${
+                      props.title === "orders" ? "nav-active" : ""
+                    }`}
+                  >
+                    Orders
+                  </p>
+                </Link>
+              </li>
+            ) : (
+              <li className="flex items-center">
+                <Link to={"/payment"}>
+                  <p
+                    className={`no-underline font-rubik ${
+                      props.title === "payment" ? "nav-active" : ""
+                    }`}
+                  >
+                    Your Cart
+                  </p>
+                </Link>
+              </li>
+            )}
+            {token && adminRole === 1 ? (
+              <li className="flex items-center">
+                <Link to={"/dashboard"}>
+                  <p
+                    className={`no-underline font-rubik ${
+                      props.title === "dashboard" ? "nav-active" : ""
+                    }`}
+                  >
+                    Dashboard
+                  </p>
+                </Link>
+              </li>
+            ) : (
+              <li className="flex items-center">
+                <Link to={"/history"}>
+                  <p
+                    className={`no-underline font-rubik ${
+                      props.title === "history" ? "nav-active" : ""
+                    }`}
+                  >
+                    History
+                  </p>
+                </Link>
+              </li>
+            )}
           </div>
           {token ? (
             <div className="flex relative flex-row justify-center items-center gap-8">
@@ -208,11 +268,11 @@ function Header(props) {
               </div>
               <Menu as={"div"} className={`relative`}>
                 <Menu.Button>
-                  <div className="flex items-center cursor-pointer">
+                  <div className="rounded-full w-9 h-9 overflow-hidden border-2 border-first-brown cursor-pointer">
                     <img
                       src={img ? img : defaultProfile}
-                      alt="profile photo"
-                      className="profile-img"
+                      alt={`${name} profile photo`}
+                      className="w-full h-full rounded-full object-cover object-center z-[2]"
                     />
                   </div>
                 </Menu.Button>
@@ -230,7 +290,7 @@ function Header(props) {
                   >
                     <Menu.Item
                       as={"div"}
-                      className={`bg-white shadow-[0px_4px_20px_rgba(0,0,0,0.1)] rounded-lg p-2 font-poppins`}
+                      className={`bg-white shadow-[0px_4px_20px_rgba(0,0,0,0.1)] rounded-lg p-2 font-poppins cursor-default select-none`}
                     >
                       <p>
                         Signed in as <br />{" "}
@@ -242,18 +302,26 @@ function Header(props) {
                     <Menu.Item
                       as={"div"}
                       onClick={() => navigate("/profile")}
-                      className={`flex items-center gap-x-3 cursor-pointer bg-white shadow-[0px_4px_20px_rgba(0,0,0,0.1)] rounded-lg p-2 font-poppins`}
+                      className={`group flex items-center gap-x-3 cursor-pointer bg-white hover:bg-first-brown shadow-[0px_4px_20px_rgba(0,0,0,0.1)] rounded-lg p-2 font-poppins`}
                     >
-                      <i className="material-icons text-first-brown">person</i>
-                      <p>Profile</p>
+                      <i className="material-icons text-first-brown group-hover:text-white">
+                        person
+                      </i>
+                      <p className="text-black group-hover:text-white">
+                        Profile
+                      </p>
                     </Menu.Item>
                     <Menu.Item
                       onClick={() => setIsDialogOpen(true)}
                       as={"div"}
-                      className={`flex items-center gap-x-3 cursor-pointer bg-white shadow-[0px_4px_20px_rgba(0,0,0,0.1)] rounded-lg p-2 font-poppins`}
+                      className={`group flex items-center gap-x-3 cursor-pointer bg-white hover:bg-first-brown shadow-[0px_4px_20px_rgba(0,0,0,0.1)] rounded-lg p-2 font-poppins`}
                     >
-                      <i className="material-icons text-first-brown">logout</i>
-                      <p>Log out</p>
+                      <i className="material-icons text-first-brown group-hover:text-white">
+                        logout
+                      </i>
+                      <p className="text-black group-hover:text-white">
+                        Log out
+                      </p>
                     </Menu.Item>
                   </Menu.Items>
                 </Transition>

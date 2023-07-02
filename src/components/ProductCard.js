@@ -23,7 +23,7 @@ function ProductCard({ id, src, name, price }) {
           IDR {price.toLocaleString("id-ID")}
         </p>
       </Link>
-      {adminRole && <Link to={`detail/${id}`} className="absolute bottom-0 right-0">
+      {adminRole === 1 && <Link to={`detail/${id}`} className="absolute bottom-0 right-0">
         <div className="group relative flex">
           <div
             id="pen"

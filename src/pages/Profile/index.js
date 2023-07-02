@@ -66,6 +66,7 @@ function Profile() {
 
   useEffect(() => {
     fetchUserData();
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
 
   const birthDate = DateTime.fromISO(profileData["birth_date"]).toFormat(
@@ -164,12 +165,14 @@ function Profile() {
           fetchUserData();
           setIsEditable(false);
           setImagePreview(null);
+          window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
           return <>Succesfully changed profile data</>;
         },
         error: () => {
           e.target.disabled = false;
           setIsEditable(false);
           setImagePreview(null);
+          window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
           return <>Something went wrong</>;
         },
       }
@@ -200,6 +203,7 @@ function Profile() {
         },
         success: () => {
           fetchUserData();
+          window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
           e.target.disabled = false;
           return <>Successfully removed image</>;
         },

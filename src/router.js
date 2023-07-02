@@ -1,7 +1,11 @@
 import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 
-import PrivateRoute, { IsLogin } from "./utils/wrapper/privateRoute";
+import PrivateRoute, {
+  AdminRoute,
+  IsLogin,
+  TokenHandler,
+} from "./utils/wrapper/privateRoute";
 
 import Home from "./pages/Home";
 import Error from "./pages/Error";
@@ -18,8 +22,16 @@ import Payment from "./pages/Payment";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
-    errorElement: <Error />,
+    element: (
+      <TokenHandler>
+        <Home />
+      </TokenHandler>
+    ),
+    errorElement: (
+      <TokenHandler>
+        <Error />
+      </TokenHandler>
+    ),
   },
   {
     path: "/login",
@@ -48,41 +60,59 @@ const router = createBrowserRouter([
   {
     path: "/profile",
     element: (
-      <PrivateRoute>
-        <Profile />
-      </PrivateRoute>
+      <TokenHandler>
+        <PrivateRoute>
+          <Profile />
+        </PrivateRoute>
+      </TokenHandler>
     ),
   },
   {
     path: "/history",
     element: (
-      <PrivateRoute>
-        <History />
-      </PrivateRoute>
+      <TokenHandler>
+        <PrivateRoute>
+          <History />
+        </PrivateRoute>
+      </TokenHandler>
     ),
   },
   {
     path: "/payment",
     element: (
-      <PrivateRoute>
-        <Payment />
-      </PrivateRoute>
+      <TokenHandler>
+        <PrivateRoute>
+          <Payment />
+        </PrivateRoute>
+      </TokenHandler>
     ),
   },
   {
     path: "/products",
-    element: <Product />,
+    element: (
+      <TokenHandler>
+        <Product />
+      </TokenHandler>
+    ),
   },
   {
     path: "/products/detail/:id",
-    element: <ProductDetail />,
+    element: (
+      <TokenHandler>
+        <ProductDetail />
+      </TokenHandler>
+    ),
   },
   {
     path: "/products/create",
     element: (
-      <PrivateRoute>
-        <AddProduct />
-      </PrivateRoute>
+      <TokenHandler>
+        <PrivateRoute>
+          <AdminRoute>
+            <AddProduct />
+          </AdminRoute>
+        </PrivateRoute>
+      </TokenHandler>
     ),
   },
 ]);

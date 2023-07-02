@@ -35,15 +35,20 @@ function History() {
 
   useEffect(() => {
     fetchHistoryData();
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
   }, []);
 
   const deleteHandler = (item) => {
     deleteHistory(item.history_id, item.product_id, token, controller)
       .then(() => {
         fetchHistoryData();
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
         toast.success("Successfully deleted", { duration: Infinity });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        console.log(error);
+      });
   };
 
   document.title = "History";
@@ -65,17 +70,34 @@ function History() {
             </div>
           </section>
           <section className="main-content pt-10 pb-32">
-            <div className="content-wrapper lg:min-h-[755.56px] grid xl:grid-cols-3 xl:grid-rows-5 md:grid-cols-2 lg:gap-8 px-12 gap-4">
-              {historyData.map((item, index) => {
-                return (
-                  <HistoryCard
-                    key={index}
-                    item={item}
-                    index={index}
-                    deleteHandler={deleteHandler}
-                  />
-                );
-              })}
+            <div
+              className={`content-wrapper lg:min-h-[755.56px] ${
+                historyData.length
+                  ? "grid xl:grid-cols-3 xl:grid-rows-5 md:grid-cols-2 lg:gap-8"
+                  : "flex justify-center items-start"
+              } px-12 gap-4`}
+            >
+              {historyData.length ? (
+                historyData.map((item, index) => {
+                  return (
+                    <HistoryCard
+                      key={index}
+                      item={item}
+                      index={index}
+                      deleteHandler={deleteHandler}
+                    />
+                  );
+                })
+              ) : (
+                <div className="bg-white flex md:flex-row flex-col justify-center items-center gap-x-3 w-3/4 lg:w-1/2 py-4 rounded-md shadow-[0px_4px_20px_rgba(0,0,0,0.1)]">
+                  <span className="material-icons-round text-first-brown text-5xl">
+                    warning
+                  </span>
+                  <p className="font-poppins text-3xl text-center text-first-brown">
+                    You haven&apos;t bought anything
+                  </p>
+                </div>
+              )}
             </div>
           </section>
         </section>

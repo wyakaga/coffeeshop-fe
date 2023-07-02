@@ -18,6 +18,10 @@ import review3 from "../../assets/img/review3.webp";
 function Home() {
   const token = useSelector((state) => state.auth.data.token);
 
+  React.useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, []);
+
   document.title = "Coffee Shop";
 
   return (
