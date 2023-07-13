@@ -26,6 +26,7 @@ function Profile() {
   const [imagePreview, setImagePreview] = useState(null);
 
   const [isEditable, setIsEditable] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,10 +38,10 @@ function Profile() {
 
   const [form, setForm] = useState({
     img: null,
-    address: "",
-    display_name: "",
-    first_name: "",
-    last_name: "",
+    address: null,
+    display_name: null,
+    first_name: null,
+    last_name: null,
     birth_date: "",
     gender: "",
   });
@@ -92,6 +93,7 @@ function Profile() {
   const onFormChange = (e) => {
     const { name, value } = e.target;
     setForm((prevForm) => ({ ...prevForm, [name]: value }));
+    setIsChanged(true);
   };
 
   const onBirthDateChange = (e) => {
@@ -100,6 +102,7 @@ function Profile() {
       "yyyy/MM/dd"
     );
     setForm((prevForm) => ({ ...prevForm, [name]: newValue }));
+    setIsChanged(true);
   };
 
   const onImageChange = (e) => {
@@ -137,6 +140,7 @@ function Profile() {
   const onGenderChange = (e) => {
     const { name, value } = e.target;
     setForm((prevForm) => ({ ...prevForm, [name]: value }));
+    setIsChanged(true);
   };
 
   const updateHandler = (e) => {
@@ -165,6 +169,7 @@ function Profile() {
           fetchUserData();
           setIsEditable(false);
           setImagePreview(null);
+          setIsChanged(false);
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
           return <>Succesfully changed profile data</>;
         },
@@ -172,6 +177,7 @@ function Profile() {
           e.target.disabled = false;
           setIsEditable(false);
           setImagePreview(null);
+          setIsChanged(false);
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
           return <>Something went wrong</>;
         },
@@ -191,6 +197,7 @@ function Profile() {
     });
     setImagePreview(null);
     setIsEditable(false);
+    setIsChanged(false);
   };
 
   const removeImageHandler = (e) => {
@@ -273,6 +280,8 @@ function Profile() {
       { success: { duration: Infinity } }
     );
   };
+
+  console.log(isChanged, form);
 
   document.title = "Profile";
 
@@ -360,7 +369,7 @@ function Profile() {
                       the change?
                     </p>
                     <button
-                      disabled={!Object.values(form).some((value) => !!value)}
+                      disabled={isChanged === false}
                       className="w-full h-[60px] bg-first-brown text-white hover:bg-first-yellow active:bg-first-yellow hover:text-first-brown active:text-first-brown disabled:bg-gray-400 disabled:text-fifth-gray disabled:cursor-not-allowed border-none rounded-[20px] font-poppins font-bold text-lg duration-300"
                       id="save-btn"
                       onClick={(e) => updateHandler(e)}
@@ -368,7 +377,7 @@ function Profile() {
                       Save change
                     </button>
                     <button
-                      disabled={!Object.values(form).some((value) => !!value)}
+                      disabled={isChanged === false}
                       onClick={cancelHandler}
                       className="w-full h-[60px] bg-first-yellow text-first-brown hover:bg-first-brown active:bg-first-brown hover:text-white active:text-white disabled:bg-gray-400 disabled:text-fifth-gray disabled:cursor-not-allowed border-none rounded-[20px] font-poppins font-bold text-lg"
                     >

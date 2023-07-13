@@ -33,6 +33,7 @@ function Header(props) {
       ? state.user?.data?.display_name
       : state.auth.data?.data?.display_name
   );
+  const email = useSelector((state) => state.auth?.data.data?.email);
   const adminRole = useSelector((state) => state.auth.data?.data?.role_id);
 
   const [keyword, setKeyword] = useState("");
@@ -40,6 +41,12 @@ function Header(props) {
   const [isSearchActive, setIsSearchActive] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+  const shortenEmail = (email) => {
+    const atIndex = email.indexOf("@");
+    const domain = email.slice(atIndex + 1);
+    const shortenedDomain = domain.substr(0, 3) + "...";
+    return email.slice(0, atIndex + 1) + shortenedDomain;
+  };
   const handleToggle = () => setToggleState((toggleState) => !toggleState);
   const onInputChange = (e) => setKeyword(e.target.value);
   const searchHandler = () => navigate(`/products?search=${keyword}`);
@@ -286,16 +293,16 @@ function Header(props) {
                   leaveTo="transform opacity-0 scale-95"
                 >
                   <Menu.Items
-                    className={`absolute top-12 right-0 flex flex-col gap-y-3 bg-white rounded-lg shadow-[0px_4px_20px_rgba(0,0,0,0.1)] w-40 px-3 py-3`}
+                    className={`absolute top-12 right-0 flex flex-col gap-y-3 bg-white rounded-lg shadow-[0px_4px_20px_rgba(0,0,0,0.1)] w-44 px-3 py-3`}
                   >
                     <Menu.Item
                       as={"div"}
                       className={`bg-white shadow-[0px_4px_20px_rgba(0,0,0,0.1)] rounded-lg p-2 font-poppins cursor-default select-none`}
                     >
                       <p>
-                        Signed in as <br />{" "}
+                        {greeting} <br />{" "}
                         <span className="font-bold text-first-brown">
-                          {name}
+                          {name || shortenEmail(email)}
                         </span>
                       </p>
                     </Menu.Item>

@@ -29,3 +29,21 @@ export const deleteHistory = (historyId, productId, token, controller) => {
   };
   return axios.delete(url, config);
 };
+
+export const getPendingTransactions = (token, controller) => {
+  const url = `${baseUrl}/history/status`;
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: controller.signal,
+  };
+  return axios.get(url, config);
+};
+
+export const manageTransactions = (historyId, token, controller) => {
+  const url = `${baseUrl}/history/change-status/${historyId}`;
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: controller.signal,
+  };
+  return axios.patch(url, null, config);
+};

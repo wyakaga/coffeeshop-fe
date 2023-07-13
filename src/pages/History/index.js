@@ -39,6 +39,10 @@ function History() {
   }, []);
 
   const deleteHandler = (item) => {
+    if (item.transaction_status !== "finished") {
+      return toast.error("Only finished items are allowed to be deleted");
+    }
+
     deleteHistory(item.history_id, item.product_id, token, controller)
       .then(() => {
         fetchHistoryData();

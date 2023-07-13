@@ -127,7 +127,7 @@ function Payment() {
                 </div>
                 <div className="order-details flex flex-col gap-y-5">
                   <div className="order-items flex flex-col gap-y-4 min-h-[90px] h-[200px] overflow-y-auto scrollbar scrollbar-w-1 scrollbar-track-rounded-md scrollbar-thumb-rounded-md scrollbar-track-third-gray/30 scrollbar-thumb-first-brown/70">
-                    {cartData.length < 1 ? (
+                    {!cartData.length ? (
                       <EmptyCart />
                     ) : (
                       cartData.map((item, index) => (

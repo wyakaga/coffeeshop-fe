@@ -18,6 +18,7 @@ import Product from "./pages/Product";
 import ProductDetail from "./pages/ProductDetail";
 import AddProduct from "./pages/AddProduct";
 import Payment from "./pages/Payment";
+import Orders from "./pages/Orders";
 
 const router = createBrowserRouter([
   {
@@ -110,6 +111,18 @@ const router = createBrowserRouter([
         <PrivateRoute>
           <AdminRoute>
             <AddProduct />
+          </AdminRoute>
+        </PrivateRoute>
+      </TokenHandler>
+    ),
+  },
+  {
+    path: "/orders",
+    element: (
+      <TokenHandler>
+        <PrivateRoute>
+          <AdminRoute>
+            <Orders />
           </AdminRoute>
         </PrivateRoute>
       </TokenHandler>

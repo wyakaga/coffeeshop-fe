@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-hot-toast";
@@ -18,6 +18,10 @@ function Login() {
   const [form, setForm] = React.useState({ email: "", password: "" });
   const [error, setError] = React.useState({ email: "", password: "" });
   const [visible, setVisible] = React.useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, []);
 
   const handleRedirect = () => {
     navigate("/");
@@ -50,12 +54,19 @@ function Login() {
           dispatch(authAction.save(res.data));
         }),
         {
-          loading: "Logging in...",
+          loading: () => {
+            e.target.disabled = true;
+            return <>Logging in...</>;
+          },
           success: () => {
             handleRedirect();
             return <>Welcome</>;
           },
-          error: "Invalid email or password",
+          error: () => {
+            e.target.disabled = false;
+            setForm({ email: "", password: "" });
+            return <>Invalid email or password</>;
+          },
         },
         {
           duration: 3000,
@@ -79,7 +90,10 @@ function Login() {
         <HeaderAuth pageTitle={"Login"} />
         <main className="lg:py-16 lg:px-2 py-12 px-3 md:p-12 lg:my-16 lg:mx-0 m-0 lg:bg-none auth-bg bg-cover bg-center">
           <div className="form-wrapper flex flex-col items-center lg:py-6 lg:px-4 md:p-12 lg:bg-white bg-white/30 backdrop-filter backdrop-blur-xl lg:rounded-none rounded-[12px] lg:border-none border border-solid border-[rgba(209,213,219,0.3)]">
-            <form className="flex flex-col gap-4 w-11/12 md:w-[31.56rem] mt-8 md:mt-0">
+            <form
+              onSubmit={(e) => loginHandler(e)}
+              className="flex flex-col gap-4 w-11/12 md:w-[31.56rem] mt-8 md:mt-0"
+            >
               <div className="form-content-wrapper flex flex-col gap-2">
                 <label
                   htmlFor="email"

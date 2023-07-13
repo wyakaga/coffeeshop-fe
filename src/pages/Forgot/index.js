@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { getOtp, forgot } from "../../utils/https/auth";
 
@@ -15,7 +15,11 @@ function Forgot() {
   const [form, setForm] = React.useState({ otp: "", password: "" });
   const [error, setError] = React.useState("");
   const [visible, setVisible] = React.useState(false);
-	const [otpReceived, setOtpReceived] = React.useState(false);
+  const [otpReceived, setOtpReceived] = React.useState(false);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  }, []);
 
   const onChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -42,7 +46,7 @@ function Forgot() {
         .then((res) => {
           console.log(res.data.message);
           setTimeLeft({ minutes: 2, seconds: 0 });
-					setOtpReceived(true);
+          setOtpReceived(true);
         })
         .catch((err) => {
           console.log(err);
@@ -50,7 +54,7 @@ function Forgot() {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const interval = setInterval(() => {
       const { seconds, minutes } = timeLeft;
 
@@ -61,8 +65,8 @@ function Forgot() {
       if (seconds === 0) {
         if (minutes === 0) {
           clearInterval(interval);
-					setEmail("");
-					setOtpReceived(false);
+          setEmail("");
+          setOtpReceived(false);
         } else {
           setTimeLeft(({ minutes }) => ({
             minutes: minutes - 1,
@@ -71,6 +75,8 @@ function Forgot() {
         }
       }
     }, 1000);
+
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
 
     return () => clearInterval(interval);
   }, [timeLeft]);
@@ -86,7 +92,7 @@ function Forgot() {
 
   const otpSubmitHandler = (e) => {
     e.preventDefault();
-		e.target.disabled = true;
+    e.target.disabled = true;
 
     forgot(email, form.otp, form.password)
       .then((res) => {
@@ -132,7 +138,10 @@ function Forgot() {
             </div>
             <div className="form-wrapper md:w-[38.188rem] flex flex-col items-center lg:py-6 lg:px-0 md:p-12 gap-12">
               {otpReceived && timeLeft.minutes >= 0 && timeLeft.minutes >= 0 ? (
-                <form className="flex flex-col gap-4 md:w-full">
+                <form
+                  onSubmit={(e) => otpSubmitHandler(e)}
+                  className="flex flex-col gap-4 md:w-full"
+                >
                   <div
                     className="form-content-wrapper flex flex-col gap-2"
                     id="otp-wrapper"
@@ -191,7 +200,10 @@ function Forgot() {
                   </div>
                 </form>
               ) : (
-                <form className="flex flex-col gap-4 w-full">
+                <form
+                  onSubmit={(e) => emailSubmitHandler(e)}
+                  className="flex flex-col gap-4 w-full"
+                >
                   <div
                     className="form-content-wrapper flex flex-col gap-2"
                     id="email-wrapper"
@@ -214,7 +226,7 @@ function Forgot() {
                       id="send-btn"
                       disabled={!email}
                       className="w-full h-[4.5rem] rounded-[20px] p-0 border-none text-first-brown hover:text-white disabled:text-fifth-gray font-extrabold text-xl font-poppins bg-first-yellow hover:bg-first-brown disabled:bg-gray-400 shadow-[0px_6px_20px_rgba(255,186,51,0.4)] hover:shadow-[0px_6px_20px_rgba(106,64,41,0.63)] disabled:shadow-none transition-all duration-300 cursor-pointer disabled:cursor-not-allowed"
-                      onClick={emailSubmitHandler}
+                      onClick={(e) => emailSubmitHandler(e)}
                     >
                       Send
                     </button>
