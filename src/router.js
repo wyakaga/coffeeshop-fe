@@ -19,6 +19,7 @@ import ProductDetail from "./pages/ProductDetail";
 import AddProduct from "./pages/AddProduct";
 import Payment from "./pages/Payment";
 import Orders from "./pages/Orders";
+import Dashboard from "./pages/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -123,6 +124,18 @@ const router = createBrowserRouter([
         <PrivateRoute>
           <AdminRoute>
             <Orders />
+          </AdminRoute>
+        </PrivateRoute>
+      </TokenHandler>
+    ),
+  },
+  {
+    path: "/dashboard",
+    element: (
+      <TokenHandler>
+        <PrivateRoute>
+          <AdminRoute>
+            <Dashboard />
           </AdminRoute>
         </PrivateRoute>
       </TokenHandler>

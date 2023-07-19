@@ -4,7 +4,6 @@ import React, { useState, useRef } from "react";
 import garbageIcon from "../assets/icon/garbage-icon.svg";
 
 function HistoryCard({ item, index, deleteHandler }) {
-
   const parentRef = useRef();
 
   const [selectedItemIndex, setSelectedItemIndex] = useState(-1);
@@ -50,7 +49,10 @@ function HistoryCard({ item, index, deleteHandler }) {
         </p>
       </div>
       <div
-        onClick={() => deleteHandler(item)}
+        onClick={(e) => {
+          deleteHandler(item);
+          optionHiddenHandler(e);
+        }}
         className={`garbage-icon ${
           selectedItemIndex === index ? "block" : "hidden"
         } absolute top-[-20px] right-[35px]`}

@@ -249,6 +249,8 @@ function Orders() {
     );
   }
 
+  document.title = "Manage Orders";
+
   return (
     <div className="body-wrapper grid grid-cols-1 grid-rows-1">
       <Header title="orders" />

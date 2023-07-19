@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { toast } from "react-hot-toast";
 
 import { getOtp, forgot } from "../../utils/https/auth";
 
@@ -42,15 +43,15 @@ function Forgot() {
     setError(invalid);
 
     if (invalid === "") {
-      getOtp(email)
-        .then((res) => {
-          console.log(res.data.message);
+      toast.promise(getOtp(email), {
+        loading: "Please wait...",
+        success: () => {
           setTimeLeft({ minutes: 2, seconds: 0 });
           setOtpReceived(true);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+          return <>Check your email inbox</>;
+        },
+        error: "Something went wrong",
+      });
     }
   };
 
@@ -76,8 +77,6 @@ function Forgot() {
       }
     }, 1000);
 
-    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
-
     return () => clearInterval(interval);
   }, [timeLeft]);
 
@@ -92,17 +91,22 @@ function Forgot() {
 
   const otpSubmitHandler = (e) => {
     e.preventDefault();
-    e.target.disabled = true;
-
-    forgot(email, form.otp, form.password)
-      .then((res) => {
-        console.log(res.data);
+    toast.promise(forgot(email, form.otp, form.password), {
+      loading: () => {
+        e.target.disabled = true;
+        return <>Please wait</>;
+      },
+      success: () => {
+        e.target.disabled = false;
         setTimeLeft({ minutes: 0, seconds: 0 });
         navigate("/login");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+        return <>Successfully changed password</>;
+      },
+      error: () => {
+        e.target.disabled = false;
+        return <>Something went wrong</>;
+      },
+    });
   };
 
   document.title = "Forgot your password?";

@@ -47,3 +47,12 @@ export const manageTransactions = (historyId, token, controller) => {
   };
   return axios.patch(url, null, config);
 };
+
+export const getReports = (sortBy = "month", token, controller) => {
+  const url = `${baseUrl}/history/reports?sortBy=${sortBy}`;
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+    signal: controller.signal,
+  };
+  return axios.get(url, config);
+};

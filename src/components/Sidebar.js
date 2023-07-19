@@ -184,7 +184,10 @@ function Sidebar({
                         </div>
                       )}
                       {token && adminRole === 1 ? (
-                        <div className="flex flex-row items-center gap-x-3 text-xl">
+                        <div
+                          onClick={() => navigate("/dashboard")}
+                          className="flex flex-row items-center gap-x-3 text-xl"
+                        >
                           <i className="material-icons-round text-first-brown text-2xl">
                             dashboard
                           </i>
