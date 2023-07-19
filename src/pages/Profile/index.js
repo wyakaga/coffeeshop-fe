@@ -26,7 +26,6 @@ function Profile() {
   const [imagePreview, setImagePreview] = useState(null);
 
   const [isEditable, setIsEditable] = useState(false);
-  const [isChanged, setIsChanged] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +92,6 @@ function Profile() {
   const onFormChange = (e) => {
     const { name, value } = e.target;
     setForm((prevForm) => ({ ...prevForm, [name]: value }));
-    setIsChanged(true);
   };
 
   const onBirthDateChange = (e) => {
@@ -102,7 +100,6 @@ function Profile() {
       "yyyy/MM/dd"
     );
     setForm((prevForm) => ({ ...prevForm, [name]: newValue }));
-    setIsChanged(true);
   };
 
   const onImageChange = (e) => {
@@ -140,7 +137,6 @@ function Profile() {
   const onGenderChange = (e) => {
     const { name, value } = e.target;
     setForm((prevForm) => ({ ...prevForm, [name]: value }));
-    setIsChanged(true);
   };
 
   const updateHandler = (e) => {
@@ -169,7 +165,6 @@ function Profile() {
           fetchUserData();
           setIsEditable(false);
           setImagePreview(null);
-          setIsChanged(false);
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
           return <>Succesfully changed profile data</>;
         },
@@ -177,7 +172,6 @@ function Profile() {
           e.target.disabled = false;
           setIsEditable(false);
           setImagePreview(null);
-          setIsChanged(false);
           window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
           return <>Something went wrong</>;
         },
@@ -197,7 +191,6 @@ function Profile() {
     });
     setImagePreview(null);
     setIsEditable(false);
-    setIsChanged(false);
   };
 
   const removeImageHandler = (e) => {
@@ -280,8 +273,6 @@ function Profile() {
       { success: { duration: Infinity } }
     );
   };
-
-  console.log(isChanged, form);
 
   document.title = "Profile";
 
@@ -369,7 +360,7 @@ function Profile() {
                       the change?
                     </p>
                     <button
-                      disabled={isChanged === false}
+                      disabled={!isEditable}
                       className="w-full h-[60px] bg-first-brown text-white hover:bg-first-yellow active:bg-first-yellow hover:text-first-brown active:text-first-brown disabled:bg-gray-400 disabled:text-fifth-gray disabled:cursor-not-allowed border-none rounded-[20px] font-poppins font-bold text-lg duration-300"
                       id="save-btn"
                       onClick={(e) => updateHandler(e)}
@@ -377,7 +368,7 @@ function Profile() {
                       Save change
                     </button>
                     <button
-                      disabled={isChanged === false}
+                      disabled={!isEditable}
                       onClick={cancelHandler}
                       className="w-full h-[60px] bg-first-yellow text-first-brown hover:bg-first-brown active:bg-first-brown hover:text-white active:text-white disabled:bg-gray-400 disabled:text-fifth-gray disabled:cursor-not-allowed border-none rounded-[20px] font-poppins font-bold text-lg"
                     >
@@ -754,7 +745,7 @@ function Profile() {
                             <div className="flex cursor-pointer bg-first-yellow hover:bg-[rgb(255,169,0)] text-first-brown font-poppins font-bold h-[40px] w-[40px] justify-center items-center rounded-full duration-300">
                               <i className="material-icons font-black">close</i>
                             </div>
-                            <span className="absolute top-12 -right-2 scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
+                            <span className="absolute font-poppins top-12 -right-2 scale-0 transition-all rounded bg-black py-2 px-4 text-xs text-white whitespace-nowrap group-hover:scale-100 group-active:scale-0">
                               Close
                             </span>
                           </div>
